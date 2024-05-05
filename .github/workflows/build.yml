@@ -31,6 +31,7 @@ jobs:
     strategy:
       matrix:
         cell_type: [P42A, DG40]
+        boot_animation: [DEFAULT, REDWHITEBLUE, RAINBOW]
 
     steps:
       - name: Checkout code
@@ -47,7 +48,7 @@ jobs:
       - name: Build project
         run: |
           cd LCM
-          make CELL_TYPE=${{ matrix.cell_type }}
+          make CELL_TYPE=${{ matrix.cell_type }} BootAnimation=${{ matrix.boot_animation }}
 
       - name: Release app.hex
         uses: actions/upload-release-asset@v1
@@ -56,7 +57,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./LCM/Build/app.hex
-          asset_name: lcm-${{ matrix.cell_type }}.hex
+          asset_name: LCM-${{ matrix.cell_type }}-${{ matrix.boot_animation }}.hex
           asset_content_type: application/octet-stream
 
   build_artifact:
@@ -64,6 +65,7 @@ jobs:
     strategy:
       matrix:
         cell_type: [P42A, DG40]
+        boot_animation: [DEFAULT, REDWHITEBLUE, RAINBOW]
 
     steps:
       - name: Checkout code
@@ -80,10 +82,10 @@ jobs:
       - name: Build project
         run: |
           cd LCM
-          make CELL_TYPE=${{ matrix.cell_type }}
+          make CELL_TYPE=${{ matrix.cell_type }} BootAnimation=${{ matrix.boot_animation }}
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: lcm-${{ matrix.cell_type }}.hex
+          name: LCM-${{ matrix.cell_type }}-${{ matrix.boot_animation }}.hex
           path: ./LCM/Build/app.hex
