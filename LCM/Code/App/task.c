@@ -760,6 +760,20 @@ void Headlights_Task(void)
 		return;
 	}
 
+	if (Current_Headlight_Brightness < 5) {
+		LED_B_OFF;
+		LED_F_OFF;
+		TIM_SetCompare2(TIM1, 9999);
+		Current_Headlight_Brightness = 0;
+	}
+
+	if (Target_Headlight_Brightness == 0 && Current_Headlight_Brightness == 0) {
+		LED_B_OFF;
+		LED_F_OFF;
+		TIM_SetCompare2(TIM1, 9999);
+		return;
+	}
+
 	if ((Target_Headlight_Brightness != 0) || (Current_Headlight_Brightness != 0)) {
 		if (Current_Headlight_Brightness < Target_Headlight_Brightness) {
 			Current_Headlight_Brightness += 3;
