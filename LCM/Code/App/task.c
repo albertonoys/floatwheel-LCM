@@ -731,6 +731,20 @@ void Headlights_Task(void)
 	static uint8_t gear_position_last = 0;
 	static bool isForward = false;
 
+	static uint8_t power_flag_stable = 0;
+	static uint8_t power_flag_last = 0;
+
+	if (Power_Flag != power_flag_last) {
+		power_flag_stable = 0;
+		power_flag_last = Power_Flag;
+	} else {
+		power_flag_stable++;
+	}
+
+	if (power_flag_stable < 5) {
+		return;
+	}
+
 	if (Flashlight_Time < 10) {
 		return;
 	}
