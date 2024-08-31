@@ -23,7 +23,7 @@ static void lcmConfigReset(void)
 	lcmConfig.bootAnimation = BOOT_DEFAULT;
 	lcmConfig.dutyBeep = 90;
 	lcmConfig.autoShutdownTime = SHUTDOWN_TIME;
-	
+
 	EEPROM_ReadByte(BOOT_ANIMATION, &lcmConfig.bootAnimation);
 	if (lcmConfig.bootAnimation < 0 || lcmConfig.bootAnimation >= BOOT_ANIMATION_COUNT) {
 		lcmConfig.bootAnimation = BOOT_DEFAULT;
@@ -58,7 +58,7 @@ void KEY1_Task(void)
 	{
 		return;
 	}
-	
+
 	switch(KEY1_State)
 	{
 		case 1:         // Click
@@ -127,7 +127,7 @@ static void WS2812_Power_Display(uint8_t brightness)
 		g = brightness;
 	if (numleds > 4)
 		b = brightness;
-	
+
 	if (Power_Display_Flag > 0) {
 		WS2812_Set_AllColours(1, numleds, r, g, b);
 	} else {
@@ -156,23 +156,23 @@ static void WS2812_VESC(void)
 		blue = blue / 2;
 		green = blue;
 	}
-	
+
 	switch(WS2812_Flag)
 	{
 		case 1:// Half Foot Sensors: adc1>2.5V  adc2<2.5V
 				WS2812_Set_AllColours(1, 5,0,green, blue);
 		break;
-		
+
 		case 2:// Half Foot Sensors: adc1<2.5V  adc2>2.5V
 				WS2812_Set_AllColours(6, 10,0,green, blue);
 		break;
-		
+
 		case 3:// Both Foot Sensors: adc1>2.5V  adc2>2.5V
 				WS2812_Set_AllColours(1, 10,0,green,blue);
 		break;
-			
+
 		case 4:// Riding
-			
+
 			/*if (Power_Display_Flag > 7) {
 				// Voltage below 30%?
 				// Display 1/2 red dots at full brightness above anything else
@@ -207,7 +207,7 @@ static void WS2812_VESC(void)
 		  	blue = (Power_Time - 100) % 255;
 		  	pos = (Power_Time/100) % 10;
 			WS2812_Set_Colour(pos,red,green,blue);
-		break;			
+		break;
 		default:
 		break;
 	}
@@ -270,7 +270,7 @@ uint8_t status_brightness = 1;
  * @param  : times 1 means 200ms
 **************************************************/
 static uint8_t WS2812_Calc_Bri(uint8_t cnt)
-{	
+{
 	if(cnt < 50)
 	{
 		status_brightness++;
@@ -279,17 +279,17 @@ static uint8_t WS2812_Calc_Bri(uint8_t cnt)
 	{
 		status_brightness--;
 	}
-	
+
 	if(status_brightness < 1)
 	{
 		status_brightness = 1;
 	}
-	
+
 	if(status_brightness > 50)
 	{
 		status_brightness = 50;
 	}
-	
+
 	return status_brightness;
 }
 
@@ -306,9 +306,9 @@ static void WS2812_Charge(void)
 	{
 		cnt = 0;
 	}
-	
+
 	WS2812_Refresh();
-}	
+}
 
 static void WS2812_Disabled(void)
 {
@@ -345,7 +345,7 @@ static void WS2818_Knight_Rider(uint8_t brightness) {
 			uint8_t brightness = (distanceToTail >= 0 && distanceToTail <= TAIL_LENGTH) ?
 								WS2812_Measure - distanceToTail * (WS2812_Measure / TAIL_LENGTH) : 0;
 
-			
+
 			WS2812_Set_Colour(i,brightness,0,0);
 		}
 
@@ -406,14 +406,14 @@ static void WS2812_Handtest(void)
 
 /**************************************************
  * @brie   :WS2812_Task()
- * @note   :WS2812任务 
+ * @note   :WS2812任务
  * @param  :无
  * @retval :无
  **************************************************/
 void WS2812_Task(void)
 {
 	uint8_t i;
-	
+
 	if(Charge_Flag == 3) // Battery fully charged
 	{
 		WS2812_Set_AllColours(1,10,50,150,50);	// white with a strong green tint
@@ -448,13 +448,13 @@ void WS2812_Task(void)
 		WS2812_Boot();
 		return;
 	}
-	
+
 	if (Power_Flag > 2) {
 		WS2812_Refresh();
 		Idle_Time = 0;
 		return;
 	}
-	
+
 	// Power Flag must be 2, aka board is ready or running
 	if (lcmConfig.isSet) {
 		WS2812_Measure = lcmConfig.statusbarBrightness;
@@ -483,7 +483,7 @@ void WS2812_Task(void)
 
 /**************************************************
  * @brie   :Power_Task()
- * @note   :电源任务 
+ * @note   :电源任务
  * @param  :无
  * @retval :无
  **************************************************/
@@ -498,13 +498,13 @@ void Power_Task(void)
 			Power_Flag = 3;
 		}
 	}
-	
+
 	if(power_flag_last == Power_Flag && Power_Flag != 1)
 	{
 		return;
 	}
 	power_flag_last = Power_Flag;
-	
+
 	switch(Power_Flag)
 	{
 		case 1://VESC Power On
@@ -515,7 +515,7 @@ void Power_Task(void)
 					Power_Time = 0;
 					power_step = 1;
 				break;
-				
+
 				case 1:
 					if(Power_Time > VESC_BOOT_TIME)
 					{
@@ -527,12 +527,12 @@ void Power_Task(void)
 					}
 				break;
 			}
-			
-		break;	
+
+		break;
 
 		case 3:// VESC is shut down (either auto-shutdown or button press)
 			WS2812_Display_Flag = 0;
-			PWR_OFF 
+			PWR_OFF
 		break;
 
 		case 4:// New Power state for shutdown sequence
@@ -645,28 +645,28 @@ void Charge_Task(void)
 			Charge_Time = 0;
 			charge_step = 1;
 		break;
-		
+
 		case 1:
 			if(Charge_Time > 1000)  //��ʱ1S
 			{
 				charge_step = 2;
 			}
 		break;
-		
+
 		case 2:
 			CHARGE_ON;
 			Charge_Flag = 2;
 		    charge_step = 3;
 			//Power_Flag = 1;	// Boot the VESC
 		break;
-		
+
 		case 3:
 			Charge_Time = 0;
 			charge_step = 4;
 		break;
-			
-		case 4:	
-			if(Charge_Time > DETECTION_SWITCH_TIME) 
+
+		case 4:
+			if(Charge_Time > DETECTION_SWITCH_TIME)
 			{
 				V_I = 1;
 				Charge_Time = 0;
@@ -674,20 +674,20 @@ void Charge_Task(void)
 				charge_step = 5;
 			}
 		break;
-			
+
 		case 5:
-			if(Charge_Time > DETECTION_SWITCH_TIME) 
+			if(Charge_Time > DETECTION_SWITCH_TIME)
 			{
 				V_I = 0;
 				Charge_Time = 0;
 				LED1_OFF; // Use ADC3 to measure charge current
 				charge_step = 4;
-			}		
+			}
 		break;
-			
+
 		default:
 		break;
-		
+
 	}
 }
 
@@ -723,7 +723,7 @@ static void Set_Headlights_Brightness(int brightness)
 /**************************************************
  * @brief  :Headlights_Task()
  * @note   :Handle direction changes and fading of headlights
- * Smooth fading during transitions is achieved by using positive and 
+ * Smooth fading during transitions is achieved by using positive and
  * negative brightnesses for forward/backward
  **************************************************/
 void Headlights_Task(void)
@@ -736,7 +736,7 @@ void Headlights_Task(void)
 	}
 	Flashlight_Time = 0;
 
-	if(Power_Flag != 2) // Lights off 
+	if(Power_Flag != 2) // Lights off
 	{
 		LED_B_OFF;
 		LED_F_OFF;
@@ -815,22 +815,22 @@ void Buzzer_Task(void)
 
 	BUZZER_OFF;
 	return;
-	
+
 	if(Power_Flag != 2 || Buzzer_Flag == 1)
 	{
 		BUZZER_OFF;
 		buzzer_step = 0;
 		return;
 	}
-	
+
 	if(Buzzer_Frequency == 0 && gear_position_last == Gear_Position)
 	{
 		BUZZER_OFF;
 		buzzer_step = 0;
 		return;
 	}
-	
-	if(Buzzer_Frequency != 0)	
+
+	if(Buzzer_Frequency != 0)
 	{
 		switch(buzzer_step)
 		{
@@ -839,21 +839,21 @@ void Buzzer_Task(void)
 				Buzzer_Time = 0;
 				buzzer_step = 1;
 			break;
-			
+
 			case 1:
 				Buzzer_Ring(sound_frequency>>2);
 				buzzer_step = 2;
 			break;
-			
+
 			case 2:
 				if(Buzzer_Time > sound_frequency)
-				{	
+				{
 					buzzer_step = 0;
 				}
 			break;
-				
+
 			default:
-			
+
 		  break;
 		}
 	}
@@ -865,15 +865,15 @@ void Buzzer_Task(void)
 				Buzzer_Time = 0;
 				buzzer_step = 1;
 			break;
-			
+
 			case 1:
 				Buzzer_Ring(200);
 				buzzer_step = 2;
 			break;
-			
+
 			case 2:
 				if(Buzzer_Time > 400)
-				{	
+				{
 					ring_frequency++;
 					buzzer_step = 0;
 					if(ring_frequency >= Gear_Position)
@@ -881,12 +881,12 @@ void Buzzer_Task(void)
 						ring_frequency = 0;
 						gear_position_last = Gear_Position;
 					}
-					
+
 				}
 			break;
-				
+
 			default:
-			
+
 		  break;
 		}
 	}
@@ -919,10 +919,10 @@ void Usart_Task(void)
 
 		usart_step = 0;
 		commandIndex = 0;
-		
+
 		return;
 	}
-	
+
 	switch(usart_step)
 	{
 		case 0:
@@ -951,13 +951,13 @@ void Usart_Task(void)
 
 			usart_step = 1;
 		break;
-		
+
 		case 1:
 			if(VESC_RX_Flag == 1)
 			{
 				VESC_RX_Flag = 0;
 				result = Protocol_Parse(VESC_RX_Buff);
-				
+
 				Vesc_Data_Ready = (result == 0);
 				Usart_Time = 0;
 				usart_step = 2;
@@ -968,14 +968,14 @@ void Usart_Task(void)
 				Usart_Time = 0;
 			}
 		break;
-			
+
 		case 2:
 			if(Usart_Time >= 100)
 			{
 				usart_step = 0;
-			}				
+			}
 		break;
-			
+
 		case 3:
 			if(VESC_RX_Flag == 1)
 			{
@@ -986,13 +986,13 @@ void Usart_Task(void)
 				usart_step = 0;
 			}
 		break;
-			
+
 		default:
-			
+
 		break;
-		
+
 	}
-	
+
 }
 
 /**************************************************
@@ -1005,26 +1005,26 @@ void ADC_Task(void)
 	static uint16_t adc_charge_sum_ave = 0;
 	static uint16_t adc1_val_sum_ave = 0;
 	static uint16_t adc2_val_sum_ave = 0;
-	
+
 	switch(adc_step)
 	{
 		case 0:
 			ADC_Time = 0;
 			adc_step = 1;
 		break;
-		
+
 		case 1:
 			if(ADC_Time>100)
-			{	
+			{
 				ADC_Time = 0;
-				
+
 				adc_charge_sum_ave= Read_ADC_Value(3);
 				adc1_val_sum_ave  = Read_ADC_Value(1);
 				adc2_val_sum_ave  = Read_ADC_Value(2);
-				
+
 				ADC1_Val = (float)(adc1_val_sum_ave*0.0012890625);
 				ADC2_Val = (float)(adc2_val_sum_ave*0.0012890625);
-				
+
 				if(V_I == 0)
 				{
 					if(Charge_Time>100)
@@ -1040,11 +1040,11 @@ void ADC_Task(void)
 					}
 				}
 			}
-			
+
 		break;
-			
+
 	  default:
-			
+
 		break;
 	}
 }
@@ -1083,13 +1083,13 @@ void VESC_State_Task(void)
 	if (data.state > RUNNING_UPSIDEDOWN) {
 		Buzzer_Frequency = 0;
 	}
-#endif	
-	
+#endif
+
 	if(data.rpm<0)
 	{
 		data.rpm = -data.rpm;
 	}
-	
+
 	if(data.state == RUNNING_FLYWHEEL) {
 		WS2812_Display_Flag = 2;
 		WS2812_Flag = 5;
@@ -1126,18 +1126,18 @@ void VESC_State_Task(void)
 		WS2812_Display_Flag = 2;
 		WS2812_Flag = 4;	// Normal Riding!
 	}
-	
+
 	// No movement and no ADCs? Shutdown after timeout (10-30min)
 	if(ADC1_Val > 2.0 || ADC2_Val > 2.0 || data.rpm > 1000)
 	{
 		Shutdown_Time_S = 0;
 		Shutdown_Time_M = 0;
 	}
-	
+
 	if(Shutdown_Time_S>60000)
 	{
 		Shutdown_Time_S = 0;
-		
+
 		Shutdown_Time_M++;
 		if(Shutdown_Time_M >= SHUTDOWN_TIME)//lcmConfig.autoShutdownTime)
 		{
