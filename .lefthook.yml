@@ -1,13 +1,11 @@
 pre-commit:
   commands:
     clang-format-check:
-      glob: "*.{c,h}"
-      exclude: '^LCM/Library/'
+      glob: "LCM/Code/App/*.{c,h}"
       run: clang-format -i --dry-run --Werror {staged_files}
       skip: false
     clang-format-fix:
-      glob: "*.{c,h}"
-      exclude: '^LCM/Library/'
+      glob: "LCM/Code/App/*.{c,h}"
       stage_fixed: true
       run: clang-format -i {staged_files}
       skip: true
@@ -15,13 +13,11 @@ pre-commit:
 clang-format-check:
   commands:
     check:
-      glob: "*.{c,h}"
-      exclude: '^LCM/Library/'
+      glob: "LCM/Code/App/*.{c,h}"
       run: clang-format -i --dry-run --Werror {all_files}
 
 clang-format-fix:
   commands:
     fix:
-      glob: "*.{c,h}"
-      exclude: '^LCM/Library/'
+      glob: "LCM/Code/App/*.{c,h}"
       run: clang-format -i {all_files}
